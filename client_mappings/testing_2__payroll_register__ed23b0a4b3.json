@@ -1,0 +1,10 @@
+{
+  "PayCode": "pay_code",
+  "CodeType": "code_type",
+  "EarnAmt": "earn_amount",
+  "BeneAmt": "benefit_amount",
+  "DeducAmt": "deduction_amount",
+  "EETax": "ee_tax",
+  "ERTax": "er_tax",
+  "NetAmt": "net_amount"
+}

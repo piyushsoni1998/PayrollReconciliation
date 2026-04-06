@@ -1,0 +1,9 @@
+{
+  "TransSource": "trans_source",
+  "GL Code": "gl_code",
+  "GL Title": "gl_title",
+  "Net": "net_amount",
+  "Debit": "debit_amount",
+  "Credit": "credit_amount",
+  "PostTo": "date"
+}

@@ -1,0 +1,90 @@
+{
+  "report_metadata": {
+    "generated_at": "2026-03-19T17:57:24.824109",
+    "generated_at_formatted": "2026-03-19 17:57:24",
+    "sonarqube_server": "http://localhost:9000",
+    "report_version": "2.0"
+  },
+  "project": {
+    "key": "demo_project",
+    "name": "demo_project",
+    "last_analysis_date": "2026-03-19 17:57:17",
+    "last_analysis_iso": "2026-03-19T17:57:17"
+  },
+  "quality_gate": {
+    "status": "OK",
+    "passed": true,
+    "conditions": [
+      {
+        "metric": "new_violations",
+        "status": "OK",
+        "actual_value": "0",
+        "error_threshold": "0"
+      },
+      {
+        "metric": "software_quality_security_rating",
+        "status": "OK",
+        "actual_value": "1",
+        "error_threshold": "1"
+      }
+    ]
+  },
+  "metrics": {
+    "reliability": {
+      "bugs": "0",
+      "rating_letter": "A",
+      "rating_raw": "1.0"
+    },
+    "security": {
+      "vulnerabilities": "0",
+      "security_hotspots": "0",
+      "rating_letter": "A",
+      "rating_raw": "1.0"
+    },
+    "maintainability": {
+      "code_smells": "0",
+      "technical_debt_minutes": "0",
+      "rating_letter": "A",
+      "rating_raw": "1.0"
+    },
+    "coverage": {
+      "coverage_percent": "0.0",
+      "lines_to_cover": "161",
+      "uncovered_lines": "161"
+    },
+    "duplications": {
+      "duplicated_lines_percent": "0.0",
+      "duplicated_lines": "0",
+      "duplicated_blocks": "0"
+    },
+    "size": {
+      "lines_of_code": "457",
+      "total_lines": "576",
+      "statements": "163",
+      "files": "1",
+      "classes": "0",
+      "functions": "6",
+      "comment_lines": "56",
+      "comment_lines_percent": "10.9"
+    },
+    "complexity": {
+      "cyclomatic_complexity": "32",
+      "cognitive_complexity": "45"
+    }
+  },
+  "issues": {
+    "total_open": 0,
+    "by_type": {
+      "CODE_SMELL": 0,
+      "BUG": 0,
+      "VULNERABILITY": 0
+    },
+    "by_severity": {
+      "INFO": 0,
+      "MINOR": 0,
+      "MAJOR": 0,
+      "CRITICAL": 0,
+      "BLOCKER": 0
+    }
+  }
+}

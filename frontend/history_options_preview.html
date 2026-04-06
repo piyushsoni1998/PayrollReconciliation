@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>History Options — Visual Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B2E;--navy-mid:#142438;--navy-hover:#1A2F47;--navy-active:#1E3A5A;
+  --blue:#4F6BF5;--blue-dark:#3D57E8;--blue-bg:#EEF2FF;--blue-border:#C7D2FE;
+  --green:#059669;--green-bg:#ECFDF5;--green-text:#065F46;--green-border:#A7F3D0;
+  --red:#DC2626;--red-bg:#FEF2F2;--red-text:#991B1B;--red-border:#FECACA;
+  --amber:#D97706;--amber-bg:#FFFBEB;--amber-text:#92400E;--amber-border:#FDE68A;
+  --gold:#F59E0B;
+  --bg:#F0F3F8;--surface:#FFFFFF;--surface-2:#F8FAFC;--surface-3:#EEF2F7;
+  --border:#E1E7F0;--border-mid:#C8D3E3;
+  --text-1:#0A0F1E;--text-2:#3D4C65;--text-3:#7E93B0;
+  --sidebar-w:220px;
+  --radius-sm:4px;--radius:7px;--radius-lg:11px;--radius-xl:16px;
+  --shadow:0 4px 8px rgba(10,15,30,.08),0 2px 4px rgba(10,15,30,.04);
+  --shadow-md:0 8px 20px rgba(10,15,30,.10),0 3px 8px rgba(10,15,30,.05);
+  --shadow-lg:0 20px 40px rgba(10,15,30,.13),0 6px 12px rgba(10,15,30,.06);
+}
+body{font-family:'Inter',system-ui,sans-serif;background:#E8EDF5;color:var(--text-1);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ── Page chrome ── */
+.page-wrap{max-width:1320px;margin:0 auto;padding:40px 32px 80px}
+.page-title{font-size:28px;font-weight:800;color:var(--text-1);letter-spacing:-.5px;margin-bottom:8px}
+.page-sub{font-size:15px;color:var(--text-3);margin-bottom:48px;line-height:1.6}
+.section-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-3);margin-bottom:18px;padding-left:2px;
+}
+
+/* ── Option card wrapper ── */
+.option-wrap{margin-bottom:64px}
+.option-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:20px;
+}
+.option-badge{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--blue);color:#fff;
+  font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.option-name{font-size:17px;font-weight:800;color:var(--text-1)}
+.option-desc{font-size:13px;color:var(--text-2);margin-top:2px;line-height:1.5}
+.recommended-badge{
+  margin-left:12px;
+  background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border);
+  font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:20px;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+
+/* ── Browser chrome wrapper ── */
+.browser-chrome{
+  background:#fff;border-radius:12px;
+  box-shadow:0 2px 8px rgba(10,15,30,.08),0 24px 64px rgba(10,15,30,.12);
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.browser-bar{
+  background:#F4F5F7;border-bottom:1px solid #ddd;
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+}
+.browser-dot{width:11px;height:11px;border-radius:50%}
+.browser-url{
+  flex:1;margin-left:8px;background:#fff;border:1px solid #ddd;
+  border-radius:6px;padding:4px 12px;font-size:11px;color:#666;
+}
+
+/* ── App shell mockup ── */
+.mock-app{display:flex;height:520px;background:var(--bg)}
+
+/* ── Sidebar ── */
+.mock-sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  box-shadow:2px 0 8px rgba(10,15,30,.04);
+}
+.mock-nav-section{padding:12px 10px 6px;flex:1}
+.mock-nav-label{
+  font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--text-3);padding:4px 8px 8px;
+}
+.mock-nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 10px;border-radius:var(--radius);
+  color:var(--text-2);font-size:12.5px;font-weight:500;
+  margin-bottom:1px;cursor:default;
+}
+.mock-nav-item.active{
+  background:var(--blue-bg);color:var(--blue);font-weight:600;
+  box-shadow:inset 3px 0 0 var(--blue);
+}
+.mock-nav-item.dim{opacity:.45}
+.mock-nav-icon{font-size:13px;width:17px;text-align:center;flex-shrink:0;color:var(--text-3)}
+.mock-nav-item.active .mock-nav-icon{color:var(--blue)}
+.mock-nav-text{flex:1}
+.mock-nav-pill{
+  background:var(--gold);color:#fff;
+  font-size:9px;font-weight:800;min-width:15px;height:15px;
+  border-radius:8px;padding:0 4px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mock-nav-pill.green{background:var(--green)}
+.mock-nav-pill.count{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);font-size:9px;font-weight:700}
+.mock-sidebar-settings{
+  padding:10px 12px 14px;border-top:1px solid var(--border);
+  background:var(--surface-2);
+}
+.mock-setting-group{margin-bottom:8px}
+.mock-setting-label{
+  display:block;font-size:9.5px;font-weight:700;
+  color:var(--text-3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em;
+}
+.mock-setting-input{
+  width:100%;padding:5px 9px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:11.5px;color:var(--text-1);
+}
+
+/* ── Main content ── */
+.mock-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.mock-topbar{
+  height:50px;background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;box-shadow:0 1px 4px rgba(10,15,30,.05);flex-shrink:0;
+}
+.mock-topbar-left{font-size:12px;font-weight:700;color:var(--text-2)}
+.mock-topbar-right{display:flex;align-items:center;gap:8px}
+
+.mock-page{padding:20px 24px;flex:1;overflow:hidden}
+.mock-page-title{font-size:17px;font-weight:800;color:var(--text-1);margin-bottom:3px}
+.mock-page-sub{font-size:11.5px;color:var(--text-3);margin-bottom:18px}
+
+/* ── Status grid ── */
+.mock-status-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;
+}
+.mock-tile{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:14px 14px 12px;cursor:default;
+}
+.mock-tile-step{font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--text-3);letter-spacing:.06em;margin-bottom:4px}
+.mock-tile-title{font-size:13px;font-weight:700;color:var(--text-1);margin-bottom:2px}
+.mock-tile-detail{font-size:10.5px;color:var(--text-3);margin-bottom:8px;line-height:1.4}
+.mock-tile-status{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10.5px;font-weight:600;padding:2px 8px;
+  border-radius:var(--radius-sm);
+}
+.st-ok .mock-tile-status{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border)}
+.st-todo .mock-tile-status{background:var(--surface-2);color:var(--text-3);border:1px solid var(--border)}
+.st-warn .mock-tile-status{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border)}
+
+/* ── Recent runs section (Option A) ── */
+.mock-recent-section{margin-top:14px}
+.mock-section-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.mock-section-title{font-size:13px;font-weight:700;color:var(--text-1)}
+.mock-view-all{
+  font-size:11.5px;font-weight:600;color:var(--blue);cursor:default;
+  display:flex;align-items:center;gap:4px;
+}
+.mock-runs-list{display:flex;flex-direction:column;gap:6px}
+.mock-run-row{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 14px;display:flex;align-items:center;gap:12px;
+  transition:box-shadow .15s;
+}
+.mock-run-row:hover{box-shadow:var(--shadow)}
+.mock-run-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mock-run-dot.ok{background:var(--green)}
+.mock-run-dot.var{background:var(--red)}
+.mock-run-client{font-size:12.5px;font-weight:700;color:var(--text-1);width:120px;flex-shrink:0}
+.mock-run-period{font-size:11.5px;color:var(--text-2);flex:1}
+.mock-run-status{
+  font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:var(--radius-sm);flex-shrink:0;
+}
+.mock-run-status.ok{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border)}
+.mock-run-status.var{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border)}
+.mock-run-date{font-size:10.5px;color:var(--text-3);width:80px;text-align:right;flex-shrink:0}
+.mock-run-btn{
+  font-size:10.5px;font-weight:600;color:var(--blue);cursor:default;
+  background:var(--blue-bg);border:1px solid var(--blue-border);
+  padding:3px 10px;border-radius:var(--radius-sm);white-space:nowrap;flex-shrink:0;
+}
+
+/* ── Option B sidebar variant ── */
+.mock-sidebar-b .mock-nav-item.history-item{
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  margin:4px 4px 0;
+  border-radius:var(--radius);
+}
+.mock-sidebar-b .mock-history-mini{
+  padding:6px 10px 10px;margin:2px 4px 0;
+}
+.mock-history-mini-row{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 8px;border-radius:var(--radius-sm);
+  font-size:10.5px;color:var(--text-2);margin-bottom:2px;
+}
+.mock-history-mini-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mock-history-mini-client{font-weight:600;flex:1}
+.mock-history-mini-date{color:var(--text-3);font-size:10px}
+
+/* ── Option C drawer ── */
+.mock-app-c{position:relative}
+.mock-drawer-btn{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:5px 12px;
+  font-size:11.5px;font-weight:600;color:var(--text-2);
+  display:flex;align-items:center;gap:6px;cursor:default;
+}
+.mock-drawer-btn.active{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-border)}
+.mock-drawer-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mock-drawer-overlay{
+  position:absolute;inset:0;background:rgba(10,15,30,.25);z-index:10;display:flex;justify-content:flex-end;
+}
+.mock-drawer{
+  width:340px;height:100%;background:var(--surface);border-left:1px solid var(--border);
+  box-shadow:-8px 0 32px rgba(10,15,30,.14);
+  display:flex;flex-direction:column;
+  animation:drawerIn .22s ease both;
+}
+@keyframes drawerIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.mock-drawer-hdr{
+  padding:16px 18px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mock-drawer-title{font-size:14px;font-weight:800;color:var(--text-1)}
+.mock-drawer-close{
+  width:26px;height:26px;border-radius:var(--radius-sm);
+  background:var(--surface-2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;cursor:default;
+  font-size:13px;color:var(--text-3);
+}
+.mock-drawer-body{padding:14px;flex:1;overflow:hidden}
+.mock-drawer-group{margin-bottom:16px}
+.mock-drawer-group-name{
+  font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--text-3);padding:0 2px;margin-bottom:6px;
+}
+.mock-drawer-card{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 12px;margin-bottom:5px;cursor:default;
+  transition:border-color .15s;
+}
+.mock-drawer-card:hover{border-color:var(--blue-border)}
+.mock-drawer-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.mock-drawer-period{font-size:12px;font-weight:700;color:var(--text-1)}
+.mock-drawer-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px}
+.mock-drawer-badge.ok{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-border)}
+.mock-drawer-badge.var{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border)}
+.mock-drawer-meta{font-size:10.5px;color:var(--text-3)}
+.mock-drawer-view{
+  font-size:10.5px;font-weight:600;color:var(--blue);
+  display:flex;align-items:center;gap:3px;margin-top:5px;
+}
+
+/* ── SVG icons ── */
+.icon{display:inline-flex;align-items:center;justify-content:center}
+.icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon.lg svg{width:15px;height:15px}
+
+/* ── Pros tag ── */
+.pros{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pro-tag{
+  font-size:11.5px;color:var(--text-2);
+  background:var(--surface);border:1px solid var(--border);
+  padding:4px 12px;border-radius:20px;
+  display:flex;align-items:center;gap:5px;
+}
+.pro-tag::before{content:'✓';color:var(--green);font-weight:800}
+
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:64px 0}
+
+/* ── Comparison table ── */
+.compare-table{
+  width:100%;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;border-collapse:collapse;
+  box-shadow:var(--shadow);
+}
+.compare-table th{
+  background:var(--surface-2);padding:12px 18px;text-align:left;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-3);border-bottom:1px solid var(--border);
+}
+.compare-table td{
+  padding:13px 18px;border-bottom:1px solid var(--border);
+  font-size:12.5px;color:var(--text-2);vertical-align:top;
+}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table td:first-child{font-weight:700;color:var(--text-1);white-space:nowrap}
+.badge-opt{
+  display:inline-block;font-size:10.5px;font-weight:700;
+  padding:2px 9px;border-radius:4px;margin-right:4px;
+}
+.badge-a{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.badge-b{background:#F5F3FF;color:#7C3AED;border:1px solid #DDD6FE}
+.badge-c{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div style="margin-bottom:8px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)">Visual Preview</span>
+  </div>
+  <div class="page-title">History — Three Design Options</div>
+  <p class="page-sub">Compare how each option looks inside the actual tool. All mockups use the exact same theme, fonts, and components.</p>
+
+  <!-- ══════════════════════════════════════════════
+       OPTION A — Recent Runs on Dashboard
+  ═══════════════════════════════════════════════ -->
+  <div class="option-wrap">
+    <div class="option-header">
+      <div class="option-badge">A</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="option-name">Recent Runs on the Dashboard</span>
+          <span class="recommended-badge">Recommended</span>
+        </div>
+        <div class="option-desc">Remove "History" from the sidebar. Show the last 5 runs as a live panel directly on the Dashboard — one click to reload any past result.</div>
+      </div>
+    </div>
+
+    <div class="browser-chrome">
+      <div class="browser-bar">
+        <div class="browser-dot" style="background:#FF5F57"></div>
+        <div class="browser-dot" style="background:#FEBC2E"></div>
+        <div class="browser-dot" style="background:#28C840"></div>
+        <div class="browser-url">localhost:8000</div>
+      </div>
+      <div class="mock-app">
+
+        <!-- Sidebar A -->
+        <div class="mock-sidebar">
+          <div class="mock-nav-section">
+            <div class="mock-nav-label">Workflow</div>
+            <div class="mock-nav-item active">
+              <span class="mock-nav-icon">▣</span>
+              <span class="mock-nav-text">Dashboard</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⬆</span>
+              <span class="mock-nav-text">1 · Upload Files</span>
+              <span class="mock-nav-pill">!</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⚙</span>
+              <span class="mock-nav-text">2 · Configuration</span>
+              <span class="mock-nav-pill">!</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">◈</span>
+              <span class="mock-nav-text">3 · Run &amp; Results</span>
+            </div>
+          </div>
+          <!-- No History in sidebar -->
+          <div class="mock-sidebar-settings">
+            <div class="mock-setting-group">
+              <span class="mock-setting-label">Client Name</span>
+              <div class="mock-setting-input">Acme Corp</div>
+            </div>
+            <div class="mock-setting-group">
+              <span class="mock-setting-label">Pay Period</span>
+              <div class="mock-setting-input">January 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main A -->
+        <div class="mock-main">
+          <div class="mock-topbar">
+            <div class="mock-topbar-left" style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:11.5px;color:var(--text-3)">Company Logo</span>
+              <span style="width:1px;height:20px;background:var(--border);display:inline-block"></span>
+              <span style="font-size:11.5px;color:var(--text-3)">Project Logo</span>
+            </div>
+          </div>
+          <div class="mock-page">
+            <div class="mock-page-title">Dashboard</div>
+            <div class="mock-page-sub">GL vs Payroll Register — Automated, AI-Assisted Reconciliation</div>
+
+            <div class="mock-status-grid">
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 1</div>
+                <div class="mock-tile-title">GL Report</div>
+                <div class="mock-tile-detail">General Ledger export</div>
+                <span class="mock-tile-status">↑ Upload required</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 2</div>
+                <div class="mock-tile-title">Payroll Register</div>
+                <div class="mock-tile-detail">MIP Payroll Register</div>
+                <span class="mock-tile-status">↑ Upload required</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 3</div>
+                <div class="mock-tile-title">Configuration</div>
+                <div class="mock-tile-detail">GL code ↔ Pay code</div>
+                <span class="mock-tile-status">⚙ Not saved</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 4</div>
+                <div class="mock-tile-title">Reconciliation</div>
+                <div class="mock-tile-detail">Run GL vs PR</div>
+                <span class="mock-tile-status">◈ Waiting</span>
+              </div>
+            </div>
+
+            <!-- ★ Recent runs panel -->
+            <div class="mock-recent-section">
+              <div class="mock-section-hdr">
+                <div class="mock-section-title">Recent Reconciliations</div>
+                <div class="mock-view-all">
+                  View all &nbsp;
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </div>
+              </div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+                <!-- Header row -->
+                <div style="display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--surface-2);border-bottom:1px solid var(--border)">
+                  <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);width:8px"></span>
+                  <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);width:120px">Client</span>
+                  <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);flex:1">Period</span>
+                  <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);width:70px">Status</span>
+                  <span style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);width:70px">Date</span>
+                  <span style="width:64px"></span>
+                </div>
+                <div class="mock-run-row">
+                  <div class="mock-run-dot ok"></div>
+                  <div class="mock-run-client">Acme Corp</div>
+                  <div class="mock-run-period">December 2025</div>
+                  <div><span class="mock-run-status ok">✓ Clean</span></div>
+                  <div class="mock-run-date">Mar 21, 2026</div>
+                  <div class="mock-run-btn">▶ View</div>
+                </div>
+                <div class="mock-run-row" style="background:var(--surface-2)">
+                  <div class="mock-run-dot var"></div>
+                  <div class="mock-run-client">Beta Industries</div>
+                  <div class="mock-run-period">November 2025</div>
+                  <div><span class="mock-run-status var">⚠ 3 variances</span></div>
+                  <div class="mock-run-date">Mar 18, 2026</div>
+                  <div class="mock-run-btn">▶ View</div>
+                </div>
+                <div class="mock-run-row">
+                  <div class="mock-run-dot ok"></div>
+                  <div class="mock-run-client">Acme Corp</div>
+                  <div class="mock-run-period">November 2025</div>
+                  <div><span class="mock-run-status ok">✓ Clean</span></div>
+                  <div class="mock-run-date">Feb 20, 2026</div>
+                  <div class="mock-run-btn">▶ View</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pros">
+      <span class="pro-tag">No extra nav item — cleaner sidebar</span>
+      <span class="pro-tag">History visible at a glance on every login</span>
+      <span class="pro-tag">One click to reload any past result</span>
+      <span class="pro-tag">Standard pattern used in Linear, Notion, HubSpot</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════════════
+       OPTION B — Renamed sidebar item + mini preview
+  ═══════════════════════════════════════════════ -->
+  <div class="option-wrap">
+    <div class="option-header">
+      <div class="option-badge" style="background:#7C3AED">B</div>
+      <div>
+        <span class="option-name">Reconciliation Log in Sidebar (Renamed + Preview)</span>
+        <div class="option-desc">Keep in sidebar but rename to "Reconciliation Log", add a live count badge, and show the last 2 runs as a mini-preview inline beneath the nav item.</div>
+      </div>
+    </div>
+
+    <div class="browser-chrome">
+      <div class="browser-bar">
+        <div class="browser-dot" style="background:#FF5F57"></div>
+        <div class="browser-dot" style="background:#FEBC2E"></div>
+        <div class="browser-dot" style="background:#28C840"></div>
+        <div class="browser-url">localhost:8000</div>
+      </div>
+      <div class="mock-app">
+
+        <!-- Sidebar B -->
+        <div class="mock-sidebar mock-sidebar-b" style="width:240px;min-width:240px">
+          <div class="mock-nav-section">
+            <div class="mock-nav-label">Workflow</div>
+            <div class="mock-nav-item active">
+              <span class="mock-nav-icon">▣</span>
+              <span class="mock-nav-text">Dashboard</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⬆</span>
+              <span class="mock-nav-text">1 · Upload Files</span>
+              <span class="mock-nav-pill">!</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⚙</span>
+              <span class="mock-nav-text">2 · Configuration</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">◈</span>
+              <span class="mock-nav-text">3 · Run &amp; Results</span>
+            </div>
+            <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">
+              <div class="mock-nav-label">Archive</div>
+              <!-- ★ Renamed nav item with count -->
+              <div class="mock-nav-item history-item" style="background:var(--surface-2);margin:0 0 0 0">
+                <span class="mock-nav-icon" style="color:var(--blue)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </span>
+                <span class="mock-nav-text" style="font-weight:600;color:var(--text-1)">Reconciliation Log</span>
+                <span class="mock-nav-pill count">14</span>
+              </div>
+              <!-- Mini preview rows -->
+              <div class="mock-history-mini">
+                <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);padding:0 8px;margin-bottom:4px">Recent</div>
+                <div class="mock-history-mini-row" style="background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border)">
+                  <div class="mock-history-mini-dot" style="background:var(--green)"></div>
+                  <span class="mock-history-mini-client">Acme Corp</span>
+                  <span style="font-size:10px;color:var(--text-3)">Dec 2025</span>
+                </div>
+                <div class="mock-history-mini-row" style="background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border)">
+                  <div class="mock-history-mini-dot" style="background:var(--red)"></div>
+                  <span class="mock-history-mini-client">Beta Industries</span>
+                  <span style="font-size:10px;color:var(--text-3)">Nov 2025</span>
+                </div>
+                <div style="font-size:10.5px;font-weight:600;color:var(--blue);padding:4px 8px;cursor:default">View all 14 →</div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-sidebar-settings">
+            <div class="mock-setting-group">
+              <span class="mock-setting-label">Client Name</span>
+              <div class="mock-setting-input">Acme Corp</div>
+            </div>
+            <div class="mock-setting-group" style="margin-bottom:0">
+              <span class="mock-setting-label">Pay Period</span>
+              <div class="mock-setting-input">January 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main B -->
+        <div class="mock-main">
+          <div class="mock-topbar">
+            <div class="mock-topbar-left">Company Logo &nbsp;|&nbsp; Project Logo</div>
+          </div>
+          <div class="mock-page">
+            <div class="mock-page-title">Dashboard</div>
+            <div class="mock-page-sub">GL vs Payroll Register — Automated, AI-Assisted Reconciliation</div>
+            <div class="mock-status-grid">
+              <div class="mock-tile st-ok">
+                <div class="mock-tile-step">Step 1</div>
+                <div class="mock-tile-title">GL Report</div>
+                <div class="mock-tile-detail">4,210 rows · gl_jan26.xlsx</div>
+                <span class="mock-tile-status">✓ Confirmed</span>
+              </div>
+              <div class="mock-tile st-ok">
+                <div class="mock-tile-step">Step 2</div>
+                <div class="mock-tile-title">Payroll Register</div>
+                <div class="mock-tile-detail">2,880 rows · pr_jan26.csv</div>
+                <span class="mock-tile-status">✓ Confirmed</span>
+              </div>
+              <div class="mock-tile st-ok">
+                <div class="mock-tile-step">Step 3</div>
+                <div class="mock-tile-title">Configuration</div>
+                <div class="mock-tile-detail">43 mapping rows · Acme Corp</div>
+                <span class="mock-tile-status">✓ Saved</span>
+              </div>
+              <div class="mock-tile" style="border-color:var(--blue-border);background:var(--blue-bg)">
+                <div class="mock-tile-step">Step 4</div>
+                <div class="mock-tile-title">Reconciliation</div>
+                <div class="mock-tile-detail">All files confirmed</div>
+                <span class="mock-tile-status" style="background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)">▶ Ready to run</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pros">
+      <span class="pro-tag">Always visible in sidebar</span>
+      <span class="pro-tag">Live run count at a glance</span>
+      <span class="pro-tag">Quick access to last 2 runs without leaving current page</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════════════
+       OPTION C — Slide-out drawer from top ribbon
+  ═══════════════════════════════════════════════ -->
+  <div class="option-wrap">
+    <div class="option-header">
+      <div class="option-badge" style="background:#C2410C">C</div>
+      <div>
+        <span class="option-name">Slide-out History Drawer (Top Ribbon)</span>
+        <div class="option-desc">Remove from sidebar. Add a "History" button in the top ribbon — clicking it opens a slide-in panel from the right, showing runs without navigating away.</div>
+      </div>
+    </div>
+
+    <div class="browser-chrome">
+      <div class="browser-bar">
+        <div class="browser-dot" style="background:#FF5F57"></div>
+        <div class="browser-dot" style="background:#FEBC2E"></div>
+        <div class="browser-dot" style="background:#28C840"></div>
+        <div class="browser-url">localhost:8000</div>
+      </div>
+      <div class="mock-app mock-app-c" style="position:relative">
+
+        <!-- Sidebar C (no history item) -->
+        <div class="mock-sidebar">
+          <div class="mock-nav-section">
+            <div class="mock-nav-label">Workflow</div>
+            <div class="mock-nav-item active">
+              <span class="mock-nav-icon">▣</span>
+              <span class="mock-nav-text">Dashboard</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⬆</span>
+              <span class="mock-nav-text">1 · Upload Files</span>
+              <span class="mock-nav-pill">!</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">⚙</span>
+              <span class="mock-nav-text">2 · Configuration</span>
+            </div>
+            <div class="mock-nav-item dim">
+              <span class="mock-nav-icon">◈</span>
+              <span class="mock-nav-text">3 · Run &amp; Results</span>
+            </div>
+          </div>
+          <div class="mock-sidebar-settings">
+            <div class="mock-setting-group">
+              <span class="mock-setting-label">Client Name</span>
+              <div class="mock-setting-input">Acme Corp</div>
+            </div>
+            <div class="mock-setting-group" style="margin-bottom:0">
+              <span class="mock-setting-label">Pay Period</span>
+              <div class="mock-setting-input">January 2026</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main C -->
+        <div class="mock-main">
+          <!-- ★ Topbar with History button -->
+          <div class="mock-topbar">
+            <div style="font-size:11.5px;color:var(--text-3)">Company Logo &nbsp;|&nbsp; Project Logo</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <!-- ★ History button in ribbon -->
+              <div class="mock-drawer-btn active">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                History
+                <span style="background:var(--blue);color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:10px;margin-left:2px">14</span>
+              </div>
+            </div>
+          </div>
+          <div class="mock-page">
+            <div class="mock-page-title">Dashboard</div>
+            <div class="mock-page-sub">GL vs Payroll Register — Automated, AI-Assisted Reconciliation</div>
+            <div class="mock-status-grid">
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 1</div>
+                <div class="mock-tile-title">GL Report</div>
+                <div class="mock-tile-detail">General Ledger export</div>
+                <span class="mock-tile-status">↑ Upload required</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 2</div>
+                <div class="mock-tile-title">Payroll Register</div>
+                <div class="mock-tile-detail">MIP Payroll Register</div>
+                <span class="mock-tile-status">↑ Upload required</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 3</div>
+                <div class="mock-tile-title">Configuration</div>
+                <div class="mock-tile-detail">GL code ↔ Pay code</div>
+                <span class="mock-tile-status">⚙ Not saved</span>
+              </div>
+              <div class="mock-tile st-todo">
+                <div class="mock-tile-step">Step 4</div>
+                <div class="mock-tile-title">Reconciliation</div>
+                <div class="mock-tile-detail">Run GL vs PR</div>
+                <span class="mock-tile-status">◈ Waiting</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ★ Slide-out drawer (shown open) -->
+        <div class="mock-drawer-overlay">
+          <div class="mock-drawer">
+            <div class="mock-drawer-hdr">
+              <div>
+                <div class="mock-drawer-title">Reconciliation History</div>
+                <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">14 runs across 3 clients</div>
+              </div>
+              <div class="mock-drawer-close">✕</div>
+            </div>
+            <div class="mock-drawer-body">
+              <div style="margin-bottom:12px">
+                <input style="width:100%;padding:7px 11px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;color:var(--text-3);background:var(--surface-2)" value="Filter by client…" readonly>
+              </div>
+
+              <div class="mock-drawer-group">
+                <div class="mock-drawer-group-name">Acme Corp</div>
+                <div class="mock-drawer-card">
+                  <div class="mock-drawer-card-top">
+                    <span class="mock-drawer-period">January 2026</span>
+                    <span class="mock-drawer-badge ok">✓ Clean</span>
+                  </div>
+                  <div class="mock-drawer-meta">142 lines · gl_jan26.xlsx · Mar 21</div>
+                  <div class="mock-drawer-view">▶ View Results &nbsp;<span style="color:var(--text-3);font-weight:400">↺ New Run</span></div>
+                </div>
+                <div class="mock-drawer-card">
+                  <div class="mock-drawer-card-top">
+                    <span class="mock-drawer-period">December 2025</span>
+                    <span class="mock-drawer-badge ok">✓ Clean</span>
+                  </div>
+                  <div class="mock-drawer-meta">138 lines · gl_dec25.xlsx · Feb 20</div>
+                  <div class="mock-drawer-view">▶ View Results &nbsp;<span style="color:var(--text-3);font-weight:400">↺ New Run</span></div>
+                </div>
+              </div>
+
+              <div class="mock-drawer-group">
+                <div class="mock-drawer-group-name">Beta Industries</div>
+                <div class="mock-drawer-card">
+                  <div class="mock-drawer-card-top">
+                    <span class="mock-drawer-period">November 2025</span>
+                    <span class="mock-drawer-badge var">⚠ 3 variances</span>
+                  </div>
+                  <div class="mock-drawer-meta">$4,200 variance · pr_nov25.csv · Mar 18</div>
+                  <div class="mock-drawer-view">▶ View Results &nbsp;<span style="color:var(--text-3);font-weight:400">↺ New Run</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pros">
+      <span class="pro-tag">Sidebar stays clean — no extra nav item</span>
+      <span class="pro-tag">Works from any page without navigation</span>
+      <span class="pro-tag">Full history visible in one panel</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Comparison table -->
+  <div style="margin-bottom:16px">
+    <div class="page-title" style="font-size:20px">Quick Comparison</div>
+  </div>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Criteria</th>
+        <th><span class="badge-opt badge-a">A</span> Dashboard Panel</th>
+        <th><span class="badge-opt badge-b">B</span> Sidebar Log</th>
+        <th><span class="badge-opt badge-c">C</span> Ribbon Drawer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sidebar clutter</td>
+        <td style="color:var(--green-text)">None — History removed</td>
+        <td style="color:var(--amber-text)">Slightly more sidebar space used</td>
+        <td style="color:var(--green-text)">None — History removed</td>
+      </tr>
+      <tr>
+        <td>Access speed</td>
+        <td>On Dashboard page only</td>
+        <td style="color:var(--green-text)">Always visible in sidebar</td>
+        <td style="color:var(--green-text)">Available on any page</td>
+      </tr>
+      <tr>
+        <td>Run count visibility</td>
+        <td>Shows in panel header</td>
+        <td style="color:var(--green-text)">Badge always visible in nav</td>
+        <td style="color:var(--green-text)">Badge on ribbon button</td>
+      </tr>
+      <tr>
+        <td>Context preservation</td>
+        <td>Navigates to Dashboard</td>
+        <td>Opens full History page</td>
+        <td style="color:var(--green-text)">Stays on current page</td>
+      </tr>
+      <tr>
+        <td>Professional feel</td>
+        <td style="color:var(--green-text)">Very high — SaaS standard</td>
+        <td>High — clear and labelled</td>
+        <td style="color:var(--green-text)">Very high — modern pattern</td>
+      </tr>
+      <tr>
+        <td>Best for</td>
+        <td>Users who start from Dashboard each time</td>
+        <td>Users who frequently switch between runs</td>
+        <td>Users who want history accessible anywhere</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

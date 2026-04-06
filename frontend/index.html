@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll Reconciliation Tool</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- jSpreadsheet CE — MIT licensed Excel-like spreadsheet for config page -->
+  <link rel="stylesheet" href="/static/vendor/jsuites.min.css">
+  <link rel="stylesheet" href="/static/vendor/jspreadsheet.min.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     LANDING PAGE
+     ═══════════════════════════════════════════════════════════ -->
+<div id="landing-page">
+
+  <!-- Top bar -->
+  <div class="landing-topbar">
+    <img src="/static/Company_logo.png" class="landing-topbar-logo" alt="Company" onerror="this.style.display='none'">
+    <img src="/static/Project_logo.png" class="landing-topbar-logo" alt="Project" onerror="this.style.display='none'">
+  </div>
+
+  <!-- ── Hero ── -->
+  <section class="lp-hero">
+    <div class="lp-hero-inner">
+
+      <!-- Left: copy + CTA -->
+      <div class="lp-hero-left">
+        <div class="lp-pill">
+          <span class="lp-pill-dot"></span>
+          GL vs Payroll Register
+        </div>
+        <h1 class="lp-hero-title">Payroll<br>Reconciliation,<br><em>Automated</em></h1>
+        <p class="lp-hero-desc">
+          Compare your General Ledger against the Payroll Register in seconds.
+          AI identifies columns, surfaces every variance, and exports a complete 6-sheet Excel report.
+        </p>
+        <div class="lp-hero-actions">
+          <button class="btn-enter" onclick="enterTool()">
+            Open Tool &nbsp;<span class="btn-enter-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: live preview card -->
+      <div class="lp-hero-right">
+        <div class="lp-preview-card">
+          <div class="lp-preview-hdr">
+            <div class="lp-preview-hdr-icon">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <div class="lp-preview-hdr-title">Reconciliation Clean</div>
+              <div class="lp-preview-hdr-sub">All entries matched · No variances</div>
+            </div>
+          </div>
+          <div class="lp-preview-stats">
+            <div>
+              <div class="lp-preview-stat-val">142</div>
+              <div class="lp-preview-stat-lbl">Total Lines</div>
+            </div>
+            <div>
+              <div class="lp-preview-stat-val" style="color:var(--green-text)">142</div>
+              <div class="lp-preview-stat-lbl">Matched</div>
+            </div>
+            <div>
+              <div class="lp-preview-stat-val" style="color:var(--green-text)">0</div>
+              <div class="lp-preview-stat-lbl">Variances</div>
+            </div>
+            <div>
+              <div class="lp-preview-stat-val" style="color:var(--green-text)">$0</div>
+              <div class="lp-preview-stat-lbl">Variance Amt</div>
+            </div>
+          </div>
+          <div class="lp-preview-bar-wrap">
+            <div class="lp-preview-bar-row">
+              <span>Match rate</span>
+              <span style="color:var(--green-text);font-weight:700">100%</span>
+            </div>
+            <div class="lp-preview-bar-track">
+              <div class="lp-preview-bar-fill"></div>
+            </div>
+          </div>
+          <div class="lp-preview-footer">
+            <span class="lp-preview-meta">Acme Corp &nbsp;·&nbsp; Jan 2026</span>
+            <span class="lp-preview-badge">6-sheet Excel ready</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Stats strip -->
+    <div class="lp-stats-strip">
+      <div class="lp-stats-inner">
+        <div class="lp-stat-item">
+          <div class="lp-stat-val">6</div>
+          <div class="lp-stat-lbl">Excel Report Sheets</div>
+        </div>
+        <div class="lp-stat-item">
+          <div class="lp-stat-val">AI</div>
+          <div class="lp-stat-lbl">Column Auto-Detection</div>
+        </div>
+        <div class="lp-stat-item">
+          <div class="lp-stat-val">100%</div>
+          <div class="lp-stat-lbl">Data Stays On-Premise</div>
+        </div>
+        <div class="lp-stat-item">
+          <div class="lp-stat-val">&#8734;</div>
+          <div class="lp-stat-lbl">Client Run History</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section class="lp-section lp-about">
+    <div class="lp-container">
+      <div class="lp-eyebrow">About</div>
+      <h2 class="lp-section-title">What is Payroll Reconciliation?</h2>
+      <p class="lp-section-lead">The process of verifying that every payroll expense in your accounting system exactly matches what was paid — catching posting errors before they compound.</p>
+      <div class="lp-about-grid">
+        <div class="lp-about-body">
+          <p>Payroll reconciliation verifies that amounts recorded in your <strong>General Ledger (GL)</strong> match the amounts in your <strong>Payroll Register</strong> for each pay period. Any difference — a <strong>variance</strong> — signals a potential posting error, missing entry, or mis-classification that needs investigation.</p>
+          <p>This covers all payroll components: gross wages, employer benefits, employee deductions, and payroll taxes — both employee-withheld and employer-paid.</p>
+          <p>Manual reconciliation is time-consuming and error-prone. This tool automates the entire pipeline: AI reads your files, maps codes to accounts, and surfaces every variance instantly.</p>
+        </div>
+        <div class="lp-vs-diagram">
+          <div class="lp-vs-box">
+            <div class="lp-vs-box-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="lp-vs-box-title">GL Report</div>
+            <div class="lp-vs-box-desc">General Ledger export — account codes, amounts, transaction sources</div>
+          </div>
+          <div class="lp-vs-connector">
+            <div class="lp-vs-line"></div>
+            <div class="lp-vs-label">VS</div>
+            <div class="lp-vs-line"></div>
+          </div>
+          <div class="lp-vs-box">
+            <div class="lp-vs-box-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="lp-vs-box-title">Payroll Register</div>
+            <div class="lp-vs-box-desc">Pay codes, earnings, deductions, benefits and taxes per employee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="lp-section lp-features">
+    <div class="lp-container">
+      <div class="lp-eyebrow">Features</div>
+      <h2 class="lp-section-title">Built for Payroll Accountants</h2>
+      <p class="lp-section-lead">Every feature designed to eliminate manual work and surface discrepancies instantly.</p>
+      <div class="lp-features-grid">
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <div class="lp-feat-title">AI Column Detection</div>
+          <div class="lp-feat-desc">AWS Bedrock identifies column roles automatically — no manual assignment needed for each new client or file format.</div>
+        </div>
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="lp-feat-title">Instant Reconciliation</div>
+          <div class="lp-feat-desc">Upload, confirm, and run. The engine matches GL accounts to pay codes across all categories and flags every variance in seconds.</div>
+        </div>
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <div class="lp-feat-title">6-Sheet Excel Export</div>
+          <div class="lp-feat-desc">GL Mapped, PR Mapped, GL Pivot, PR Pivot, Reconciliation summary, and Payroll Process — all in one download.</div>
+        </div>
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="lp-feat-title">Full Run History</div>
+          <div class="lp-feat-desc">Every reconciliation saved to MongoDB. Browse past runs by client, reload full results, or start a new run with pre-filled settings.</div>
+        </div>
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="lp-feat-title">Data Stays On-Premise</div>
+          <div class="lp-feat-desc">Files are processed in memory on your local server. No payroll data leaves your environment — only column names go to AWS Bedrock.</div>
+        </div>
+
+        <div class="lp-feat">
+          <div class="lp-feat-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div class="lp-feat-title">Saved Configuration</div>
+          <div class="lp-feat-desc">GL-to-pay-code mapping saved per client. Next run, your configuration loads automatically — just upload the new files.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="lp-section lp-howto">
+    <div class="lp-container">
+      <div class="lp-eyebrow">Workflow</div>
+      <h2 class="lp-section-title">Four Steps to a Reconciled Report</h2>
+      <p class="lp-section-lead">From raw files to a complete variance report — in under a minute.</p>
+      <div class="lp-steps">
+        <div class="lp-step">
+          <div class="lp-step-num">1</div>
+          <div class="lp-step-title">Upload Files</div>
+          <div class="lp-step-desc">Drop your GL Report and Payroll Register. Supports Excel, CSV, TSV, and ODS — any format your system exports.</div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">2</div>
+          <div class="lp-step-title">Confirm Columns</div>
+          <div class="lp-step-desc">AI suggests column roles. Review the assignments, correct any mismatches, and confirm to lock in your data.</div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">3</div>
+          <div class="lp-step-title">Configure Mapping</div>
+          <div class="lp-step-desc">Map GL codes to pay codes using dropdowns populated from your files. Save once — reuse every period.</div>
+        </div>
+        <div class="lp-step">
+          <div class="lp-step-num">4</div>
+          <div class="lp-step-title">Run &amp; Export</div>
+          <div class="lp-step-desc">Run the reconciliation, review results by category, and download the 6-sheet Excel report.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── User Guide ── -->
+  <section class="lp-section lp-guide">
+    <div class="lp-container">
+      <div class="lp-eyebrow">User Guide</div>
+      <h2 class="lp-section-title">Step-by-Step Instructions</h2>
+      <p class="lp-section-lead">Everything you need to complete a reconciliation run from start to finish.</p>
+      <div class="lp-guide-grid">
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">1</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Enter Client Name &amp; Pay Period</div>
+            <div class="lp-guide-text">Enter the Client Name and Pay Period in the top navigation bar. Configuration is saved per client, so returning clients load their mapping automatically.</div>
+            <div class="lp-guide-tip">Use consistent client names across runs — history groups entries by exact client name.</div>
+          </div>
+        </div>
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">2</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Upload the GL Report</div>
+            <div class="lp-guide-text">Navigate to Step 1 and drop your General Ledger export into the GL Report zone. Select the correct sheet if prompted. AI identifies Transaction Source, GL Code, GL Title, and Net Amount columns. Review and confirm.</div>
+            <div class="lp-guide-tip">The GL file must include a Transaction Source column to filter payroll rows from non-payroll entries.</div>
+          </div>
+        </div>
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">3</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Upload the Payroll Register</div>
+            <div class="lp-guide-text">Upload your MIP Payroll Register in the second upload zone. The tool identifies Pay Code, Code Type, Earnings, Benefits, Deductions, Employee Tax, and Employer Tax columns. Review and confirm the assignments.</div>
+          </div>
+        </div>
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">4</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Configure the Mapping</div>
+            <div class="lp-guide-text">Navigate to Step 2 · Configuration. Dropdowns auto-populate with GL codes and pay codes from your uploaded files. Set the Amount Column and Code Type for each row, then click Save Configuration.</div>
+            <div class="lp-guide-tip">Use "Load from Files" to auto-generate rows, or the AI Generator to describe your accounts in plain text.</div>
+          </div>
+        </div>
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">5</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Run the Reconciliation</div>
+            <div class="lp-guide-text">Go to Step 3 · Run &amp; Results. Confirm all three pre-flight items are green, then click Run Reconciliation. Results appear immediately with a full variance summary.</div>
+          </div>
+        </div>
+
+        <div class="lp-guide-item">
+          <div class="lp-guide-num">6</div>
+          <div class="lp-guide-body">
+            <div class="lp-guide-title">Review Results &amp; Download</div>
+            <div class="lp-guide-text">Explore results across five tabs: Reconciliation, GL &amp; PR Pivot, GL Pivot, PR Pivot, and Unmapped. Scroll to the bottom and click Download Excel to save the complete 6-sheet report.</div>
+            <div class="lp-guide-tip">Unmapped codes appear in the Unmapped tab — add them to Configuration to include them in future runs.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="lp-cta">
+    <div class="lp-cta-inner">
+      <div class="lp-cta-title">Ready to Reconcile?</div>
+      <p class="lp-cta-sub">Upload your files and get a complete reconciliation report in under a minute.</p>
+      <button class="btn-enter-white" onclick="enterTool()">Open Tool &nbsp;&#8594;</button>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="lp-footer">
+    <span class="lp-footer-text">GL vs Payroll Register &nbsp;&mdash;&nbsp; Automated, AI-Assisted Reconciliation</span>
+  </footer>
+
+</div><!-- /landing-page -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN APP
+     ═══════════════════════════════════════════════════════════ -->
+<div id="main-app" style="display:none;flex-direction:column;min-height:100vh">
+
+  <input type="hidden" id="cfg-bedrock" value="true">
+  <input type="hidden" id="cfg-cache"   value="true">
+
+  <!-- ── Onboarding Modal ── -->
+  <div id="onboarding-modal" class="ob-overlay" style="display:none">
+    <div class="ob-card">
+
+      <!-- Left panel — branding + workflow -->
+      <div class="ob-panel-left">
+        <div class="ob-brand-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <line x1="10" y1="9" x2="8" y2="9"/>
+          </svg>
+        </div>
+        <div class="ob-brand-title">Payroll<br>Reconciliation</div>
+        <div class="ob-brand-sub">GL vs Payroll Register — Automated &amp; AI-Assisted</div>
+
+        <div class="ob-steps-label">Workflow</div>
+        <div class="ob-steps">
+          <div class="ob-step">
+            <div class="ob-step-num ob-step-active">1</div>
+            <span class="ob-step-text ob-step-text-active">Session Setup</span>
+          </div>
+          <div class="ob-step">
+            <div class="ob-step-num">2</div>
+            <span class="ob-step-text">Upload Files</span>
+          </div>
+          <div class="ob-step">
+            <div class="ob-step-num">3</div>
+            <span class="ob-step-text">Configure Mapping</span>
+          </div>
+          <div class="ob-step">
+            <div class="ob-step-num">4</div>
+            <span class="ob-step-text">Run &amp; Export</span>
+          </div>
+        </div>
+
+        <div class="ob-left-footer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Details appear on your Excel report and in History.
+        </div>
+      </div>
+
+      <!-- Right panel — form -->
+      <div class="ob-panel-right">
+        <div class="ob-right-title">Set Up Your Session</div>
+        <div class="ob-right-sub">Identify this reconciliation run. You can change these anytime from the top navigation bar.</div>
+
+        <div class="ob-field">
+          <label class="ob-label">Client Name <span class="ob-required">*</span></label>
+          <div class="ob-input-wrap">
+            <span class="ob-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </span>
+            <input class="ob-input" type="text" id="ob-client" placeholder="e.g. Acme Corporation"
+              onkeydown="if(event.key==='Enter')document.getElementById('ob-period').focus()">
+          </div>
+        </div>
+
+        <div class="ob-field">
+          <label class="ob-label">Pay Period / Fiscal Year</label>
+          <div class="ob-input-wrap">
+            <span class="ob-input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <input class="ob-input" type="text" id="ob-period" placeholder="e.g. January 2026 or FY 2025"
+              onkeydown="if(event.key==='Enter')completeOnboarding()">
+          </div>
+        </div>
+
+        <div class="ob-divider"></div>
+
+        <div class="ob-footer-row">
+          <button class="ob-skip" onclick="skipOnboarding()">Skip for now</button>
+          <button class="ob-cta" onclick="completeOnboarding()">
+            Begin Reconciliation
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Top logo ribbon -->
+  <div class="app-topbar">
+    <img src="/static/Company_logo.png" class="topbar-logo" alt="Company" onerror="this.style.display='none'">
+    <img src="/static/Project_logo.png" class="topbar-logo" alt="Payroll Recon" onerror="this.style.display='none'">
+  </div>
+
+  <!-- Nav ribbon (below logo bar) -->
+  <nav class="nav-ribbon">
+    <div class="nav-ribbon-tabs">
+      <div class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">▣</span>
+        <span class="nav-text">Dashboard</span>
+      </div>
+      <div class="nav-item" data-page="upload">
+        <span class="nav-icon">⬆</span>
+        <span class="nav-text">Upload Files</span>
+        <span class="nav-pill" id="nav-pill-upload">!</span>
+      </div>
+      <div class="nav-item" data-page="config">
+        <span class="nav-icon">⚙</span>
+        <span class="nav-text">Configuration</span>
+        <span class="nav-pill" id="nav-pill-config">!</span>
+      </div>
+      <div class="nav-item" data-page="results">
+        <span class="nav-icon">◈</span>
+        <span class="nav-text">Run &amp; Results</span>
+        <span class="nav-pill" id="nav-pill-results">✓</span>
+      </div>
+    </div>
+    <div class="nav-ribbon-meta">
+      <div class="meta-field">
+        <span class="meta-label">Client</span>
+        <input class="meta-input" type="text" id="cfg-client" value="default" placeholder="Client name">
+      </div>
+      <div class="meta-divider"></div>
+      <div class="meta-field">
+        <span class="meta-label">Pay Period</span>
+        <input class="meta-input" type="text" id="cfg-period" placeholder="e.g. January 2026">
+      </div>
+      <button class="meta-new-btn" onclick="startNewReconciliation()" title="Start a new reconciliation run">+ New</button>
+      <div class="meta-divider"></div>
+      <!-- User badge (signed in) -->
+      <div class="auth-badge" id="auth-badge" style="display:none">
+        <div class="auth-avatar" id="auth-avatar">U</div>
+        <span class="auth-name" id="auth-display-name">User</span>
+        <button class="auth-signout-btn" onclick="signOut()" title="Sign out">↩</button>
+      </div>
+      <!-- Sign-in button (not signed in) -->
+      <button class="auth-signin-btn" id="auth-signin-btn" onclick="openAuthModal()">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Sign In
+      </button>
+    </div>
+  </nav>
+
+  <div class="app-shell">
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════ -->
+    <main class="main-content">
+
+      <!-- Loading Overlay -->
+      <div id="loading-overlay">
+        <div class="loading-card">
+          <div class="loading-spinner"></div>
+          <div class="loading-msg" id="loading-text">Processing…</div>
+        </div>
+      </div>
+
+      <!-- Global Error -->
+      <div id="global-error" class="alert alert-error"></div>
+
+      <!-- ═══════════════════════════════════════════
+           PAGE 1 — DASHBOARD
+           ═══════════════════════════════════════════ -->
+      <div id="page-dashboard" class="page active">
+
+        <div class="page-header">
+          <div class="page-title-row">
+            <div>
+              <div class="page-title">Dashboard</div>
+              <div class="page-sub">GL vs Payroll Register — Automated, AI-Assisted Reconciliation</div>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-blue btn-sm" onclick="navigate('upload')">⬆ Start — Upload Files</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+
+          <div class="status-grid">
+            <div class="status-tile st-todo" id="tile-gl" onclick="navigate('upload')">
+              <div class="tile-step">Step 1</div>
+              <div class="tile-title">GL Report</div>
+              <div class="tile-detail" id="tile-gl-detail">General Ledger export</div>
+              <div class="tile-status todo" id="tile-gl-status">↑ Upload required</div>
+              <span class="tile-go">Upload →</span>
+            </div>
+            <div class="status-tile st-todo" id="tile-pr" onclick="navigate('upload')">
+              <div class="tile-step">Step 2</div>
+              <div class="tile-title">Payroll Register</div>
+              <div class="tile-detail" id="tile-pr-detail">MIP Payroll Register export</div>
+              <div class="tile-status todo" id="tile-pr-status">↑ Upload required</div>
+              <span class="tile-go">Upload →</span>
+            </div>
+            <div class="status-tile st-todo" id="tile-config" onclick="navigate('config')">
+              <div class="tile-step">Step 3</div>
+              <div class="tile-title">Configuration</div>
+              <div class="tile-detail" id="tile-config-detail">GL code ↔ Pay code mapping</div>
+              <div class="tile-status todo" id="tile-config-status">⚙ Not configured</div>
+              <span class="tile-go">Configure →</span>
+            </div>
+            <div class="status-tile st-todo" id="tile-results" onclick="navigate('results')">
+              <div class="tile-step">Step 4</div>
+              <div class="tile-title">Reconciliation</div>
+              <div class="tile-detail" id="tile-results-detail">Run GL vs PR comparison</div>
+              <div class="tile-status todo" id="tile-results-status">◈ Waiting</div>
+              <span class="tile-go">Run →</span>
+            </div>
+          </div>
+
+          <div class="how-row">
+            <div class="how-step">
+              <div class="how-num">1</div>
+              <div class="how-title">Upload GL Report</div>
+              <div class="how-desc">Upload the General Ledger export. AI detects columns automatically.</div>
+            </div>
+            <div class="how-step">
+              <div class="how-num">2</div>
+              <div class="how-title">Upload Payroll Register</div>
+              <div class="how-desc">Upload the Payroll Register. Review and confirm column assignments.</div>
+            </div>
+            <div class="how-step">
+              <div class="how-num">3</div>
+              <div class="how-title">Configure Mapping</div>
+              <div class="how-desc">GL codes and pay codes from your files appear as dropdowns — auto-fills titles and types.</div>
+            </div>
+            <div class="how-step">
+              <div class="how-num">4</div>
+              <div class="how-title">Run &amp; Export</div>
+              <div class="how-desc">Run the reconciliation and download the 6-sheet Excel report.</div>
+            </div>
+          </div>
+
+          <!-- Recent Reconciliations panel -->
+          <div class="recent-recon-section">
+            <div class="recent-recon-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="recent-recon-title">Recent Reconciliations</span>
+                <span class="recent-recon-count" id="recent-recon-count" style="display:none"></span>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="navigate('history')" style="font-size:11.5px">View All →</button>
+            </div>
+            <div id="recent-recon-body">
+              <div class="recent-recon-loading">Loading recent runs…</div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /page-dashboard -->
+
+
+      <!-- ═══════════════════════════════════════════
+           PAGE 2 — UPLOAD FILES
+           ═══════════════════════════════════════════ -->
+      <div id="page-upload" class="page">
+
+        <div class="page-header">
+          <div class="page-title-row">
+            <div>
+              <div class="page-title">Step 1 — Upload Files</div>
+              <div class="page-sub">Upload the GL Report and Payroll Register. Columns are identified automatically using AI.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+
+          <div class="upload-grid">
+
+            <!-- GL Report card -->
+            <div class="card">
+              <div class="upload-card-header">
+                <div class="upload-step-num">1</div>
+                <div class="upload-header-info">
+                  <div class="card-title">GL Report</div>
+                  <div class="card-sub">General Ledger export from your accounting system</div>
+                </div>
+                <div class="upload-header-status">
+                  <span class="status-dot" id="dot-gl_report"></span>
+                  <span id="status-gl_report">Waiting</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="zone-gl_report" class="upload-zone">
+                  <div class="upload-inner">
+                    <div class="upload-icon">📂</div>
+                    <div class="upload-label">Click or drag &amp; drop</div>
+                    <div class="upload-hint">Excel, CSV, TSV, ODS — .xlsx .xls .xlsm .xlsb .csv .tsv .txt .ods</div>
+                    <input type="file" accept=".xlsx,.xls,.xlsm,.xltx,.xlsb,.csv,.tsv,.txt,.ods">
+                  </div>
+                </div>
+                <div class="sheet-row" id="sheet-row-gl_report">
+                  <label>Sheet:</label>
+                  <select id="sheet-sel-gl_report"></select>
+                </div>
+                <div id="mapping-gl_report"      style="display:none;margin-top:16px"></div>
+                <div id="preview-gl_report"      style="display:none;margin-top:12px"></div>
+              </div>
+            </div>
+
+            <!-- Payroll Register card -->
+            <div class="card">
+              <div class="upload-card-header">
+                <div class="upload-step-num">2</div>
+                <div class="upload-header-info">
+                  <div class="card-title">Payroll Register</div>
+                  <div class="card-sub">MIP Payroll export with employee-level transactions</div>
+                </div>
+                <div class="upload-header-status">
+                  <span class="status-dot" id="dot-payroll_register"></span>
+                  <span id="status-payroll_register">Waiting</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="zone-payroll_register" class="upload-zone">
+                  <div class="upload-inner">
+                    <div class="upload-icon">📂</div>
+                    <div class="upload-label">Click or drag &amp; drop</div>
+                    <div class="upload-hint">Excel, CSV, TSV, ODS — .xlsx .xls .xlsm .xlsb .csv .tsv .txt .ods</div>
+                    <input type="file" accept=".xlsx,.xls,.xlsm,.xltx,.xlsb,.csv,.tsv,.txt,.ods">
+                  </div>
+                </div>
+                <div class="sheet-row" id="sheet-row-payroll_register">
+                  <label>Sheet:</label>
+                  <select id="sheet-sel-payroll_register"></select>
+                </div>
+                <div id="mapping-payroll_register" style="display:none;margin-top:16px"></div>
+                <div id="preview-payroll_register" style="display:none;margin-top:12px"></div>
+              </div>
+            </div>
+
+          </div><!-- /upload-grid -->
+
+          <!-- Next step prompt -->
+          <div class="next-step-bar">
+            <div class="next-step-bar-icon">→</div>
+            <div class="next-step-bar-text">
+              <div class="next-step-bar-title">Files confirmed? Next: Configure Mapping</div>
+              <div class="next-step-bar-sub">Once both files are confirmed, GL codes and pay codes auto-populate in Configuration as dropdowns.</div>
+            </div>
+            <button class="btn btn-blue btn-sm" onclick="navigate('config')">
+              Configure Mapping →
+            </button>
+          </div>
+
+
+        </div>
+      </div><!-- /page-upload -->
+
+
+      <!-- ═══════════════════════════════════════════
+           PAGE 3 — CONFIGURATION
+           ═══════════════════════════════════════════ -->
+      <div id="page-config" class="page">
+
+        <div class="page-header">
+          <div class="page-title-row">
+            <div>
+              <div class="page-title">Step 2 — Configuration</div>
+              <div class="page-sub">Map GL codes to payroll pay codes. Upload files first — codes auto-populate as dropdowns and titles auto-fill.</div>
+            </div>
+            <div class="page-actions">
+              <span id="config-saved-badge" class="saved-badge" style="display:none">✓ Saved</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+
+          <!-- Files loaded banner -->
+          <div id="gl-loaded-banner" class="files-loaded-banner" style="display:none"></div>
+
+          <!-- ── Configuration Method Panel ── -->
+          <div class="cfg-method-panel">
+
+            <!-- Method tabs -->
+            <div class="cfg-method-tabs">
+              <button class="cfg-method-tab active" data-tab="upload" onclick="switchCfgTab('upload')">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="10" width="12" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M8 2v7M5 5l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Upload File
+              </button>
+              <button class="cfg-method-tab" data-tab="ai" onclick="switchCfgTab('ai')">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 8.5c.5 1 1.5 1.5 2.5 1.5s2-.5 2.5-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="5.5" cy="6.5" r=".8" fill="currentColor"/><circle cx="10.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+                AI Prompt
+              </button>
+              <button class="cfg-method-tab" data-tab="manual" onclick="switchCfgTab('manual')">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                Manual
+              </button>
+            </div>
+
+            <!-- Tab: Upload File -->
+            <div class="cfg-method-body" id="cfg-tab-upload">
+              <p class="cfg-method-desc">
+                Upload your configuration Excel file — the table will be populated automatically from it.
+                Use <strong>Export Excel</strong> from the toolbar to download the current config as a template.
+              </p>
+
+              <!-- Drop zone -->
+              <div class="cfg-import-zone" id="cfg-import-zone"
+                ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                ondragleave="this.classList.remove('drag-over')"
+                ondrop="event.preventDefault(); this.classList.remove('drag-over'); handleCfgImportDrop(event.dataTransfer.files[0])">
+                <div class="cfg-import-inner" id="cfg-import-inner">
+                  <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="3" width="18" height="18" rx="3" stroke="#4F6BF5" stroke-width="1.4"/>
+                    <path d="M8 12h3V8h2v4h3l-4 4-4-4z" fill="#4F6BF5"/>
+                    <line x1="7" y1="18" x2="17" y2="18" stroke="#4F6BF5" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                  <div class="cfg-import-label">Drop your configuration Excel file here</div>
+                  <div class="cfg-import-sub">or click to browse &nbsp;·&nbsp; .xlsx / .xls only</div>
+                  <input type="file" class="cfg-zone-input" id="cfg-import-file-input"
+                    accept=".xlsx,.xls" onchange="handleCfgImportDrop(this.files[0])">
+                </div>
+              </div>
+
+              <!-- Expected format note -->
+              <div class="cfg-import-format-note">
+                <strong>Expected columns:</strong>
+                Step &nbsp;·&nbsp; GL Code &nbsp;·&nbsp; GL Title &nbsp;·&nbsp;
+                Pay Code &nbsp;·&nbsp; Pay Code Title &nbsp;·&nbsp; Amount Column &nbsp;·&nbsp; Code Type
+                &nbsp;—&nbsp;
+                <button class="cfg-import-dl-link" onclick="downloadConfigExcel()">
+                  Download a template
+                </button>
+              </div>
+
+              <div id="cfg-upload-alert" class="alert alert-error" style="margin-top:10px;display:none"></div>
+            </div>
+
+            <!-- Tab: AI Prompt -->
+            <div class="cfg-method-body" id="cfg-tab-ai" style="display:none">
+              <div id="ai-chat-history" class="ai-chat-history" style="display:none"></div>
+              <div class="ai-chips">
+                <span class="ai-chip-label">Try:</span>
+                <button class="ai-chip" onclick="aiChip(this)">Add pay code OT to GL 5001 as EARNING</button>
+                <button class="ai-chip" onclick="aiChip(this)">Remove all Vision benefit rows</button>
+                <button class="ai-chip" onclick="aiChip(this)">Change FIT amount column to EeTax &amp; ERTax</button>
+                <button class="ai-chip" onclick="aiChip(this)">Add a new step H for accrued liabilities</button>
+              </div>
+              <div class="ai-input-row">
+                <textarea class="ai-chat-input" id="ai-description" rows="2"
+                  placeholder="Describe what to change — e.g. 'Add overtime pay code OT2 under GL 5001 as EARNING with EarnAmt' or 'Generate a complete mapping for a client with GL 5000 wages, 5130 benefits, 2115 taxes'"></textarea>
+                <button class="btn btn-blue btn-sm ai-send-btn" onclick="generateMappingWithAI()" id="btn-ai-generate">
+                  <span class="ai-send-icon">✦</span> Ask AI
+                </button>
+              </div>
+              <div id="ai-alert" class="alert alert-error" style="margin-top:8px"></div>
+            </div>
+
+            <!-- Tab: Manual -->
+            <div class="cfg-method-body" id="cfg-tab-manual" style="display:none">
+              <div class="cfg-manual-hints">
+                <div class="cfg-manual-hint-item">
+                  <span class="cfg-manual-hint-icon">🖱</span>
+                  <div><strong>Click any cell</strong> to edit it inline. GL Code and Pay Code cells open a searchable drill-down picker.</div>
+                </div>
+                <div class="cfg-manual-hint-item">
+                  <span class="cfg-manual-hint-icon">➕</span>
+                  <div><strong>Add Row</strong> in the toolbar appends a blank row. Right-click a row for insert / delete options.</div>
+                </div>
+                <div class="cfg-manual-hint-item">
+                  <span class="cfg-manual-hint-icon">🔵</span>
+                  <div><strong>Step chips</strong> (A – G) jump the table to the matching section instantly.</div>
+                </div>
+                <div class="cfg-manual-hint-item">
+                  <span class="cfg-manual-hint-icon">💾</span>
+                  <div><strong>Save Configuration</strong> in the footer locks in changes for the selected client.</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /cfg-method-panel -->
+
+          <!-- Mapping Table card -->
+          <div class="card cfg-card">
+            <div class="card-body" style="padding:0">
+
+              <!-- ── Toolbar Row 1: actions + search ── -->
+              <div class="cfg-toolbar">
+                <div class="cfg-tb-group">
+                  <button class="btn btn-ghost btn-sm cfg-tb-btn" onclick="resetToDefault()" title="Clear all rows — start fresh">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8A6 6 0 1 1 8 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><polyline points="2,4.5 2,8 5.5,8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Clear All
+                  </button>
+                  <div class="cfg-tb-divider"></div>
+                  <button class="btn btn-files btn-sm cfg-tb-btn" onclick="loadFromFiles()" title="Auto-generate rows from your uploaded files">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor" opacity=".3"/></svg>
+                    Load from Files
+                  </button>
+                  <button class="btn btn-ghost btn-sm cfg-tb-btn" onclick="addMappingRow()" title="Append a new blank row">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    Add Row
+                  </button>
+                </div>
+
+                <div class="cfg-tb-search-wrap">
+                  <svg class="cfg-tb-search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.6"/><line x1="10" y1="10" x2="14" y2="14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                  <input type="search" id="cfg-search" class="cfg-tb-search-input"
+                    placeholder="Search rows by step, GL code, pay code…"
+                    oninput="filterConfigRows(this.value)">
+                  <span id="cfg-search-count" class="cfg-tb-search-count"></span>
+                </div>
+
+                <div class="cfg-tb-group cfg-tb-right">
+                  <button class="btn btn-ghost btn-sm cfg-tb-btn" onclick="triggerImportConfig()" title="Import mapping from Excel file">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 11V2M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor" opacity=".3"/></svg>
+                    Import
+                  </button>
+                  <button class="btn btn-ghost btn-sm cfg-tb-btn" onclick="downloadConfigExcel()" title="Export mapping to Excel file">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 7l4 4 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="12" width="12" height="2" rx="1" fill="currentColor" opacity=".3"/></svg>
+                    Export
+                  </button>
+                  <div class="cfg-tb-divider"></div>
+                  <button class="btn btn-ghost btn-sm cfg-tb-btn" onclick="toggleAmtLegend()" id="btn-amt-legend" title="Amount column reference guide">
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="7" x2="8" y2="12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="8" cy="4.5" r="1" fill="currentColor"/></svg>
+                    Guide
+                  </button>
+                </div>
+              </div>
+
+              <!-- ── Toolbar Row 2: step navigation chips + row count ── -->
+              <div class="cfg-chips-bar">
+                <span class="cfg-chips-label">Jump to:</span>
+                <button class="cfg-step-chip cfg-chip-A" onclick="jumpToStep('A')" title="Earnings / Gross Wages">A · Earnings</button>
+                <button class="cfg-step-chip cfg-chip-B" onclick="jumpToStep('B')" title="Benefits / Employer Expenses">B · Benefits</button>
+                <button class="cfg-step-chip cfg-chip-C" onclick="jumpToStep('C')" title="Deductions">C · Deductions</button>
+                <button class="cfg-step-chip cfg-chip-D" onclick="jumpToStep('D')" title="EE/ER Tax Liabilities">D · EE Tax</button>
+                <button class="cfg-step-chip cfg-chip-E" onclick="jumpToStep('E')" title="ER Tax Expense">E · ER Tax</button>
+                <button class="cfg-step-chip cfg-chip-F" onclick="jumpToStep('F')" title="Net Pay / Bank">F · Net Pay</button>
+                <button class="cfg-step-chip cfg-chip-G" onclick="jumpToStep('G')" title="Accrued Payroll">G · Accruals</button>
+                <div style="flex:1"></div>
+                <span id="cfg-row-count" class="cfg-row-count"></span>
+                <span class="cfg-edit-hint">Click any cell to edit &nbsp;·&nbsp; Right-click for row options &nbsp;·&nbsp; Ctrl+Z/Y undo/redo</span>
+              </div>
+
+              <!-- Amount column legend (collapsible) -->
+              <div id="amt-legend-panel" class="amt-legend-panel" style="display:none">
+                <div class="amt-legend-title">Amount Column Reference</div>
+                <div class="amt-legend-grid">
+                  <div class="alg-row"><span class="alg-tag alg-earn">EarnAmt</span><span class="alg-desc">Earnings — Wages, OT, stipends. Debit to expense (5xxx). Variance = GL − PR.</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-bene">BeneAmt</span><span class="alg-desc">Benefits — Employer share of insurance, 401K. Used for both expense (5xxx) and liability (2xxx) rows.</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-dedu">DeducAmt</span><span class="alg-desc">Deductions — Employee share withheld. Credit to liability (2xxx). Variance = GL + PR.</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-eetax">EETax</span><span class="alg-desc">Employee Tax only — FIT, SWT. Credit to tax liability (2xxx).</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-ertax">ERTax</span><span class="alg-desc">Employer Tax only — FICA ER share. Debit to tax expense (5xxx).</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-both">EeTax &amp; ERTax</span><span class="alg-desc">Both EE + ER Tax — Medicare &amp; Social Security. Sums EETax + ERTax columns from PR.</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-net">NetAmt</span><span class="alg-desc">Net Pay — Bank cross-check only (GL 1020). Variance = GL Net + PR Net Pay Total.</span></div>
+                  <div class="alg-row"><span class="alg-tag alg-glo">GLOnly</span><span class="alg-desc">Informational — Accrued payroll, clearing accounts. GL balance shown as-is. No PR match. Variance = 0.</span></div>
+                </div>
+              </div>
+
+              <!-- Config summary (rendered by JS after table loads) -->
+              <div id="config-summary-panel"></div>
+
+              <!-- Spreadsheet (jSpreadsheet CE — full Excel-like editing) -->
+              <div id="cfg-spreadsheet" class="cfg-spreadsheet-container"></div>
+
+            </div>
+          </div>
+
+        </div><!-- /page-body -->
+
+        <!-- Sticky footer: Save + Next -->
+        <div class="config-sticky-footer">
+          <div class="config-footer-alerts">
+            <div id="cfg-alert"   class="alert alert-error"></div>
+            <div id="cfg-success" class="alert alert-success"></div>
+          </div>
+          <div class="config-footer-actions">
+            <button class="btn btn-ghost btn-sm" onclick="resetToDefault()">↺ Reset</button>
+            <button class="btn btn-ghost btn-sm" onclick="saveMappingConfig()">✓ Save Configuration</button>
+            <button class="btn btn-blue btn-sm" onclick="saveAndNavigateNext()">Save &amp; Next →</button>
+          </div>
+        </div>
+
+      </div><!-- /page-config -->
+
+
+      <!-- ═══════════════════════════════════════════
+           PAGE 4 — RUN & RESULTS
+           ═══════════════════════════════════════════ -->
+      <div id="page-results" class="page">
+
+        <div class="page-header">
+          <div class="page-title-row">
+            <div>
+              <div class="page-title">Step 3 — Run &amp; Results</div>
+              <div class="page-sub">Review the pre-flight checklist, then run the reconciliation.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body">
+
+          <!-- Pre-flight card -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header card-header-white">
+              <div class="upload-step-num" style="background:var(--blue-bg);color:var(--blue)">3</div>
+              <div>
+                <div class="card-title">Pre-flight Checklist</div>
+                <div class="card-sub">All three items must be ready before you can run</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="preflight-list" id="preflight-list"></ul>
+              <div id="run-error" class="alert alert-error" style="margin-top:12px"></div>
+              <div class="run-row">
+                <button id="run-btn" class="btn btn-blue btn-lg btn-full" disabled onclick="runReconciliation()">
+                  ▶ Run Reconciliation
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- New Reconciliation bar -->
+          <div id="new-recon-bar" class="new-recon-bar" style="display:none">
+            <div class="new-recon-bar-text">
+              <strong>Want to reconcile another client or period?</strong>
+              <span>Reset everything and start fresh — your configuration is saved.</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="startNewReconciliation()">↺ New Reconciliation</button>
+          </div>
+
+          <!-- Results (hidden until run) -->
+          <div id="results-section" style="display:none">
+
+            <!-- Status banner (clean or variance) -->
+            <div id="results-status-banner"></div>
+
+            <!-- Metrics -->
+            <div class="metrics-grid" id="summary-metrics"></div>
+            <div id="filter-error-banner" class="filter-error-banner" style="display:none"></div>
+            <div id="period-warning" class="period-warning-banner" style="display:none"></div>
+
+            <!-- Period filter bar -->
+            <div id="period-filter-bar" class="period-filter-bar" style="display:none">
+              <span class="pf-label-text">Filter Period:</span>
+              <span class="pf-range-label">From</span>
+              <select id="pf-from-month" class="pf-select-month">
+                <option value="01">January</option><option value="02">February</option>
+                <option value="03">March</option><option value="04">April</option>
+                <option value="05">May</option><option value="06">June</option>
+                <option value="07">July</option><option value="08">August</option>
+                <option value="09">September</option><option value="10">October</option>
+                <option value="11">November</option><option value="12">December</option>
+              </select>
+              <select id="pf-from-year" class="pf-select-year"></select>
+              <span class="pf-range-label">To</span>
+              <select id="pf-to-month" class="pf-select-month">
+                <option value="01">January</option><option value="02">February</option>
+                <option value="03">March</option><option value="04">April</option>
+                <option value="05">May</option><option value="06">June</option>
+                <option value="07">July</option><option value="08">August</option>
+                <option value="09">September</option><option value="10">October</option>
+                <option value="11">November</option><option value="12">December</option>
+              </select>
+              <select id="pf-to-year" class="pf-select-year"></select>
+              <button class="btn btn-blue btn-sm" onclick="applyPeriodFilter()">Apply</button>
+              <button class="btn btn-ghost btn-sm" onclick="clearPeriodFilter()">Clear</button>
+              <span id="period-filter-badge" class="period-filter-badge"></span>
+            </div>
+
+            <!-- Result tabs -->
+            <div class="card">
+              <div class="card-body" style="padding-bottom:24px">
+                <div class="tab-bar">
+                  <button class="tab-btn active" data-tab-group="res" data-tab="tab-combined">Reconciliation</button>
+                  <button class="tab-btn"        data-tab-group="res" data-tab="tab-recon">Variance Summary</button>
+                  <button class="tab-btn"        data-tab-group="res" data-tab="tab-gl-pivot">GL Pivot</button>
+                  <button class="tab-btn"        data-tab-group="res" data-tab="tab-pr-pivot">PR Pivot</button>
+                  <button class="tab-btn"        data-tab-group="res" data-tab="tab-unmapped">Unmapped</button>
+                </div>
+                <div id="tab-combined" class="tab-pane active"><div id="combined-pivot"></div></div>
+                <div id="tab-recon" class="tab-pane">
+                  <div style="font-size:12px;color:var(--text-3);margin-bottom:14px;display:flex;gap:16px">
+                    <span style="color:var(--green-text);font-weight:600">● Match</span>
+                    <span style="color:var(--red-text);font-weight:600">● Variance</span>
+                    <span style="color:var(--blue-dark);font-weight:600">● Total</span>
+                    <span style="color:var(--blue-dark);font-weight:600">◆ Section</span>
+                  </div>
+                  <div id="recon-table"></div>
+                </div>
+                <div id="tab-gl-pivot"  class="tab-pane"><div id="gl-pivot-table"></div></div>
+                <div id="tab-pr-pivot"  class="tab-pane"><div id="pr-pivot-table"></div></div>
+                <div id="tab-unmapped"  class="tab-pane"><div id="unmapped-content"></div></div>
+              </div>
+            </div>
+
+            <!-- Download card — at bottom -->
+            <div class="download-card" id="download-card">
+              <div class="download-card-left">
+                <div class="download-card-icon">⬇</div>
+                <div>
+                  <div class="download-card-title">Download Reconciliation Report</div>
+                  <div class="download-card-sub">6-sheet Excel &nbsp;·&nbsp; GL Mapped &nbsp;·&nbsp; PR Mapped &nbsp;·&nbsp; GL Pivot &nbsp;·&nbsp; PR Pivot &nbsp;·&nbsp; Reconciliation &nbsp;·&nbsp; Payroll Process</div>
+                  <div class="download-card-meta" id="download-meta"></div>
+                </div>
+              </div>
+              <div class="download-card-right">
+                <button class="btn btn-blue btn-lg" onclick="downloadExcel()">⬇ Download Excel</button>
+              </div>
+            </div>
+
+          </div><!-- /results-section -->
+
+        </div>
+      </div><!-- /page-results -->
+
+
+      <!-- ═══════════════════════════════════════════
+           PAGE 5 — HISTORY
+           ═══════════════════════════════════════════ -->
+      <div id="page-history" class="page">
+
+        <div class="page-header">
+          <div class="page-title-row">
+            <div>
+              <div class="page-title">Reconciliation History</div>
+              <div class="page-sub" id="history-page-sub">All past reconciliation runs saved in the database.</div>
+            </div>
+            <div class="page-actions">
+              <button class="hist-refresh-btn" onclick="loadHistory()">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-body" style="gap:0">
+
+          <!-- Sign-in prompt (shown when not logged in) -->
+          <div id="history-signin-prompt" class="hist-signin-prompt" style="display:none">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="0"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Sign in to see only your runs.</span>
+            <button class="btn btn-blue btn-sm" onclick="openAuthModal()">Sign In / Register</button>
+          </div>
+
+          <!-- Summary stats strip -->
+          <div class="hist-stats-bar" id="hist-stats-bar" style="display:none">
+            <div class="hist-stat-item">
+              <span class="hist-stat-val" id="hstat-total">—</span>
+              <span class="hist-stat-lbl">Total Runs</span>
+            </div>
+            <div class="hist-stat-sep"></div>
+            <div class="hist-stat-item">
+              <span class="hist-stat-val hist-stat-green" id="hstat-clean">—</span>
+              <span class="hist-stat-lbl">Clean</span>
+            </div>
+            <div class="hist-stat-sep"></div>
+            <div class="hist-stat-item">
+              <span class="hist-stat-val hist-stat-red" id="hstat-var">—</span>
+              <span class="hist-stat-lbl">With Variances</span>
+            </div>
+            <div class="hist-stat-sep"></div>
+            <div class="hist-stat-item">
+              <span class="hist-stat-val" id="hstat-lines">—</span>
+              <span class="hist-stat-lbl">Total Lines Processed</span>
+            </div>
+          </div>
+
+          <!-- Toolbar: filter tabs + search -->
+          <div class="hist-toolbar">
+            <div class="hist-filter-tabs">
+              <button class="hist-tab active" id="hist-tab-all"  onclick="setHistTab('all')">All</button>
+              <button class="hist-tab" id="hist-tab-clean" onclick="setHistTab('clean')">Clean</button>
+              <button class="hist-tab" id="hist-tab-var"   onclick="setHistTab('var')">Has Variances</button>
+            </div>
+            <div class="hist-search-wrap">
+              <svg class="hist-search-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="hist-search" id="history-search"
+                placeholder="Search by client or period…" oninput="filterHistory(this.value)">
+            </div>
+            <span class="hist-count" id="history-count"></span>
+          </div>
+
+          <!-- DB not connected notice -->
+          <div id="history-no-db" class="hist-empty-state" style="display:none">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border-mid)"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
+            <div class="hist-empty-title">MongoDB not connected</div>
+            <div class="hist-empty-sub">Set <code>MONGO_URI</code> in your <code>.env</code> file to enable history.</div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="history-empty" class="hist-empty-state" style="display:none">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--border-mid)"><rect x="3" y="3" width="18" height="18" rx="0"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            <div class="hist-empty-title">No runs yet</div>
+            <div class="hist-empty-sub">Complete a reconciliation run and it will appear here.</div>
+          </div>
+
+          <!-- History table -->
+          <div class="hist-table-wrap" id="history-list"></div>
+
+        </div>
+      </div><!-- /page-history -->
+
+    </main>
+  </div><!-- /app-shell -->
+
+  <!-- ══════════════════════════════════════════
+       AUTH MODAL (Sign In / Register)
+       ══════════════════════════════════════════ -->
+  <dialog id="auth-modal" class="auth-modal-dialog">
+    <div class="auth-modal-card">
+      <button class="auth-modal-close" onclick="closeAuthModal()">&times;</button>
+
+      <!-- Tabs -->
+      <div class="auth-modal-tabs">
+        <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="auth-tab-register" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- Login panel -->
+      <div id="auth-panel-login" class="auth-panel">
+        <div class="auth-modal-title">Welcome back</div>
+        <div class="auth-modal-sub">Sign in to see your reconciliation history</div>
+        <div class="auth-field">
+          <label class="auth-label" for="login-username">Username</label>
+          <input class="auth-input" type="text" id="login-username" placeholder="your username" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label" for="login-password">Password</label>
+          <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"
+            onkeydown="if(event.key==='Enter') submitLogin()">
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button class="btn btn-blue" style="width:100%;margin-top:4px" onclick="submitLogin()">Sign In</button>
+      </div>
+
+      <!-- Register panel -->
+      <div id="auth-panel-register" class="auth-panel" style="display:none">
+        <div class="auth-modal-title">Create account</div>
+        <div class="auth-modal-sub">Register to track your personal history</div>
+        <div class="auth-field">
+          <label class="auth-label" for="reg-username">Username</label>
+          <input class="auth-input" type="text" id="reg-username" placeholder="choose a username" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label" for="reg-display-name">Display Name <span style="opacity:.5;font-weight:400">(optional)</span></label>
+          <input class="auth-input" type="text" id="reg-display-name" placeholder="Your Name" autocomplete="name">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label" for="reg-password">Password <span style="opacity:.5;font-weight:400">(min 4 chars)</span></label>
+          <input class="auth-input" type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password"
+            onkeydown="if(event.key==='Enter') submitRegister()">
+        </div>
+        <div class="auth-error" id="reg-error"></div>
+        <button class="btn btn-blue" style="width:100%;margin-top:4px" onclick="submitRegister()">Create Account</button>
+      </div>
+
+    </div>
+  </dialog>
+
+</div><!-- /main-app -->
+
+<!-- jSpreadsheet CE — served locally (vendor/), must load before config.js -->
+<script src="/static/vendor/jsuites.min.js"></script>
+<script src="/static/vendor/jspreadsheet.min.js"></script>
+<!-- JS modules — order matters: app.js (core) must load first -->
+<script src="/static/js/app.js"></script>
+<script src="/static/js/upload.js"></script>
+<script src="/static/js/config.js"></script>
+<script src="/static/js/results.js"></script>
+<script src="/static/js/history.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+Standard Operating Procedure
+Reconciliation of the payroll register with the General Ledger
+Objective
+To ensure that payroll expenses, deductions, benefits, and tax liabilities recorded in the Payroll Register are accurately reflected in the General Ledger (GL).
+Data Sources
+Payroll Register Report extracted from payroll system / MIP.
+General Ledger Report extracted from MIP Accounting Software.
+Both reports are extracted and formatted in Excel to facilitate reconciliation.
+Payroll Components
+The Payroll Register typically categorizes payroll transactions into the following components:
+Earnings – Employee wages, salaries, overtime, and other compensation.
+Benefits – Employer-paid benefits such as health insurance, retirement contributions, etc.
+Deductions – Employee deductions such as insurance premiums, retirement contributions, and other withholdings.
+Taxes – Payroll taxes including employer and employee portions.
+GL Recording Structure
+In the General Ledger, payroll transactions are recorded as follows:
+Earnings → Recorded under Payroll Expense GL codes.
+Deductions → Recorded under Payroll Liability GL codes.
+Benefits → Recorded under Expense GL codes, with corresponding liability accounts where applicable.
+Taxes → Recorded under Expense GL codes with related tax liability accounts.
+GL Code Structure Variation
+The number of GL codes used for payroll accounting may vary from client to client. For example:
+Some organizations record all earnings under a single payroll expense GL code.
+Others record payroll expenses using multiple GL codes based on pay codes or payroll categories.
+Reconciliation Approach
+To perform the reconciliation, the payroll code types must first be mapped to the corresponding GL codes used in the accounting system. Once this mapping is established, totals from the Payroll Register can be aligned with the corresponding GL balances.
+Steps for Reconciliation – POT Client
+Insert a new column at the end of the GL data titled “Reconciliation Mapping” to record mapping comments, and apply a filter to the GL data to display only “PRS” transactions in the Transaction Source column (Figure 1).
+(Figure 1)
+Enter the mapping in the newly added “Reconciliation Mapping” column in the GL as follows:
+GL Codes 5000, 5001, 6000 – A. Earnings / Gross Wages
+GL Codes 5130, 5140 – B. Benefits / Employer Expenses
+GL Codes 2126, 2145, 2146, 2147, 2148 – B.1 Benefits / Employer Expenses – Liabilities
+GL Codes 2121, 2127, 2132, 2139, 2140, 2141, 2142, 2143 – C. Deductions / Employee Deductions – Liabilities
+GL Codes 2115, 2120 – D. Employee & Employer Taxes – Liabilities
+GL Code 5100 – E. ER Tax / Employer Taxes
+GL Code 1020 – F. Bank Payment to Employee (Net Pay)
+Insert a new column at the end of the Payroll Register data titled “Reconciliation Mapping” to record mapping comments. Then apply a filter on the “Code Type” column to identify categories such as Earnings, Benefits, Deductions, and Taxes for mapping. Then, apply a filter in the Pay Code column and enter the mapping in the Reconciliation Mapping column.
+Earning:
+Code Type
+Pay Code
+Mapping in Payroll register
+EARNING
+Wages
+5000-Salaries & Wages
+Retro
+Holiday
+LERETENT
+Overtime
+5001-OT Wages
+STX-1000
+6000-Stipends
+Benefits:
+Code Type
+Pay Code
+Mapping in Payroll register
+BENEFIT
+Dental16
+5130-Insurance Benefits
+Health16
+MLIFE151
+Vision16
+401K
+5140-Retirement expense
+401K+50
+401Kamt
+Roth
+401K
+2126-Employer Ret. Pybl - SCHWAB
+401K+50
+401Kamt
+Roth
+Health16
+2145-Health Insurance ER
+Dental16
+2146-Dental Insurance ER
+Vision16
+2147-Vision Insurance ER
+MLIFE151
+2148-MetLife Insurance ER
+Deductions:
+Code Type
+Pay Code
+Mapping in Payroll register
+DEDUCT
+TBLN
+2121-Tribal loan payable
+401K
+2127-EE Retiremt payable - SCHWAB
+401K+50
+401Kamt
+401K-L
+Roth
+LegalShi
+2132-LegalShield
+CHILD SU
+2138-Child support payable
+METLIFSU
+2139-MetLife payable EE
+MLIFE151
+GARNISHM
+2140-Garnishments & Levies Paybl EE
+Health16
+2141-Health Insurance EE
+Dental16
+2142-Dental Insurance EE
+Vision16
+2143-Vision Insurance EE
+Taxes:
+Code Type
+Pay Code
+Mapping in Payroll register
+TAXES
+FIT
+2115-Federal payroll taxes payable
+MC
+SS
+SWT
+2120-State payroll taxes payable
+MC
+5100-Fica expense
+SS
+Next, create a Pivot Table from the GL data. Place TransSource in the Filter field and select PRS. Add the Reconciliation Mapping, GL Code, and GL Title columns to the Rows field, and place the Net column in the Values field. Finally, convert the Pivot Table into table format (Figure 2).
+(Figure 2)
+Next, create a Pivot Table from the Payroll Register data. Place the Code Type and Reconciliation Mapping columns in the Rows field, and add the EarnAmt, BeneAmt, DeducAmt, EETax, and ERTax columns to the Values field. Finally, convert the Pivot Table into table format (Figure 3).
+(Figure 3)
+Next, create a new tab named Reconciliation and place both Pivot Tables (GL and Payroll Register) in this sheet. Then compare the two Pivot Tables and identify any variances in earnings, benefits, deductions, and tax amounts (Figure 4).
+(Figure 4)
