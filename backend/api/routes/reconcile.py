@@ -109,6 +109,14 @@ async def run_reconciliation(req: RunRequest):
             "pr_range": pr_range,
         }
 
+        # ── Derive fiscal year bounds from period (for accrual classification) ─
+        fy_start: Optional[pd.Timestamp] = None
+        fy_end:   Optional[pd.Timestamp] = None
+        if req.period_start:
+            fy_start = pd.Timestamp(req.period_start + "-01")
+        if req.period_end:
+            fy_end = pd.Timestamp(req.period_end + "-01") + pd.offsets.MonthEnd(1)
+
         # ── Process GL ─────────────────────────────────────────────────────
         gl_mapped, gl_pivot, unmapped_gl, gl_filter_info = process_gl(
             df           = gl_file["df"],
@@ -119,28 +127,45 @@ async def run_reconciliation(req: RunRequest):
         )
 
         # ── Process Payroll Register ───────────────────────────────────────
-        pr_mapped, pr_pivot, unmapped_pr, pr_filter_info = process_payroll(
+        pr_mapped, pr_pivot, unmapped_pr, pr_filter_info, pr_2157_net, accrual_summary = process_payroll(
             df           = pr_file["df"],
             col_map      = inv_pr_col_map,
             pr_lookup    = pr_lookup,
             period_start = req.period_start,
             period_end   = req.period_end,
+            fy_start     = fy_start,
+            fy_end       = fy_end,
         )
 
         # ── Net Pay total for bank cross-check ────────────────────────────
+        # Use original (un-prorated) net amounts for the bank cross-check.
+        # The bank GL (1020) should match total net pay actually disbursed.
         net_col      = inv_pr_col_map.get("net_amount")
         pr_net_total = None
         if net_col and net_col in pr_mapped.columns:
+            # Sum _orig_{net_col} if available (pre-proration); fall back to current
+            orig_net_col = f"_orig_{net_col}"
+            col_to_sum   = orig_net_col if orig_net_col in pr_mapped.columns else net_col
             pr_net_total = pd.to_numeric(
-                pr_mapped[net_col].astype(str).str.replace(",", ""),
+                pr_mapped[col_to_sum].astype(str).str.replace(",", ""),
                 errors="coerce",
             ).fillna(0).sum()
 
         # ── Build diagnostics to surface in UI ────────────────────────────
-        trans_src_col   = inv_gl_col_map.get("trans_source", "")
-        gl_earn_total   = float(gl_pivot.loc[
-            gl_pivot["GL Code"].astype(str).str.match(r"^5|^6"), "Sum of Net Amount"
-        ].sum()) if not gl_pivot.empty else 0.0
+        trans_src_col = inv_gl_col_map.get("trans_source", "")
+
+        # Determine expense GL codes from gl_lookup (account_type = expense)
+        # instead of using a hardcoded regex pattern
+        expense_codes = {
+            code for code, meta in gl_lookup.items()
+            if meta.get("account_type", "expense") == "expense"
+        }
+        gl_earn_total = float(
+            gl_pivot.loc[
+                gl_pivot["GL Code"].astype(str).isin(expense_codes),
+                "Sum of Net Amount"
+            ].sum()
+        ) if not gl_pivot.empty else 0.0
 
         pr_earn_col = inv_pr_col_map.get("earn_amount", "")
         pr_earn_total = float(
@@ -229,9 +254,13 @@ async def run_reconciliation(req: RunRequest):
             "gl_earn_total":       _safe_float(gl_earn_total),
             "pr_earn_total":       _safe_float(pr_earn_total),
             "pr_net_total":        _safe_float(pr_net_total) if pr_net_total is not None else None,
+            "pr_2157_net":         _safe_float(pr_2157_net),
+            "accrual_summary":     accrual_summary,
             "period_warning":      period_warning,
             "period_start":        req.period_start,
             "period_end":          req.period_end,
+            "fy_start":            str(fy_start.date()) if fy_start else None,
+            "fy_end":              str(fy_end.date())   if fy_end   else None,
             "gl_date_col":         gl_filter_info.get("date_col") or _resolve_date_col(inv_gl_col_map, gl_file["df"].columns),
             "pr_date_col":         pr_filter_info.get("date_col") or _resolve_date_col(inv_pr_col_map, pr_file["df"].columns),
             "gl_filter_skipped":   gl_filter_skipped,
@@ -241,7 +270,14 @@ async def run_reconciliation(req: RunRequest):
         }
 
         # ── Reconciliation ─────────────────────────────────────────────────
-        recon_df      = build_reconciliation(gl_pivot, pr_pivot, gl_lookup, pr_net_total, gl_pr_amount)
+        recon_df = build_reconciliation(
+            gl_pivot     = gl_pivot,
+            pr_pivot     = pr_pivot,
+            gl_lookup    = gl_lookup,
+            pr_net_total = pr_net_total,
+            gl_pr_amount = gl_pr_amount,
+            pr_2157_net  = pr_2157_net if pr_2157_net else None,
+        )
         summary_stats = get_summary_stats(recon_df)
         summary_stats["diagnostics"] = diagnostics
 

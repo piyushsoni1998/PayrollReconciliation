@@ -40,6 +40,7 @@ class MappingRow(BaseModel):
     pay_code_title:  str
     amount_column:   str
     code_type:       str
+    account_type:    str = ""   # "expense" | "liability" | "bank" | "glonly" | ""
 
 
 class SaveMappingRequest(BaseModel):
@@ -351,6 +352,32 @@ def _strip_step_prefix(text: str) -> str:
 
 # ── Used by the reconciliation pipeline ───────────────────────────────────────
 
+def _derive_account_type(gl_code: str, amount_col: str) -> str:
+    """
+    Derive account_type from GL code first digit when not explicitly set.
+    This ensures backwards compatibility with existing configs that
+    don't have the account_type field.
+
+    Rules:
+      GLOnly amount_column             → glonly
+      First digit 1                   → bank
+      First digit 2                   → liability
+      Everything else (5, 6, 7, etc.) → expense
+    """
+    if amount_col.strip().lower() == "glonly":
+        return "glonly"
+    # Handle combined codes like "2142/2150" — use first code
+    first_code = gl_code.split("/")[0].strip().lstrip("0")
+    if not first_code:
+        return "expense"
+    d = first_code[0]
+    if d == "1":
+        return "bank"
+    if d == "2":
+        return "liability"
+    return "expense"
+
+
 def build_lookups_from_config(rows: list):
     """
     Build GL and PR lookup dicts from the mapping config rows.
@@ -371,12 +398,17 @@ def build_lookups_from_config(rows: list):
     pr_groups = defaultdict(list)
 
     for row in rows:
-        gl_code   = str(row.get("gl_code", "")).strip()
-        gl_title  = str(row.get("gl_title", "")).strip()
-        pay_code  = str(row.get("pay_code", "")).strip()
-        code_type = str(row.get("code_type", "")).strip().upper()
-        recon_step= str(row.get("recon_step", "")).strip()
-        amount_col= str(row.get("amount_column", "")).strip()
+        gl_code      = str(row.get("gl_code", "")).strip()
+        gl_title     = str(row.get("gl_title", "")).strip()
+        pay_code     = str(row.get("pay_code", "")).strip()
+        code_type    = str(row.get("code_type", "")).strip().upper()
+        recon_step   = str(row.get("recon_step", "")).strip()
+        amount_col   = str(row.get("amount_column", "")).strip()
+        account_type = str(row.get("account_type", "")).strip().lower()
+
+        # Auto-derive account_type from GL code if not explicitly set
+        if account_type not in ("expense", "liability", "bank", "glonly"):
+            account_type = _derive_account_type(gl_code, amount_col)
 
         # Handle combined GL codes like "2142/2150"
         individual_codes = [c.strip() for c in gl_code.split("/") if c.strip()]
@@ -390,6 +422,7 @@ def build_lookups_from_config(rows: list):
                     "recon_step":    _strip_step_prefix(recon_step),
                     "code_type":     code_type,
                     "amount_column": amount_col,
+                    "account_type":  account_type,
                 }
                 if is_combined:
                     entry["combined_gl_code"] = gl_code
@@ -479,26 +512,28 @@ async def export_mapping_config_excel(client_name: str = "default"):
     fmt_drop = wb.add_format({"border": 1, "font_size": 10, "bg_color": "#FFF3E0", "font_color": "#C15700"})
 
     # Instructions row
-    ws.merge_range(0, 0, 0, 6,
+    ws.merge_range(0, 0, 0, 7,
         "Payroll Reconciliation Mapping Config — Edit GL Code, GL Title, Pay Code, Pay Code Title, "
-        "Amount Column, Code Type. Do NOT change column order. Save and upload via Configuration page.",
+        "Amount Column, Code Type, Account Type. Do NOT change column order. Save and upload via Configuration page.",
         wb.add_format({"italic": True, "bg_color": "#FFF9C4", "border": 1, "font_size": 9, "text_wrap": True}),
     )
     ws.set_row(0, 28)
 
     # Headers
-    headers    = ["STEPS of Reconciliation", "GL Code", "GL Title", "Pay Code", "Pay Code Title", "Amount Column", "Code Type"]
-    col_widths = [42, 12, 32, 14, 30, 16, 12]
+    headers    = ["STEPS of Reconciliation", "GL Code", "GL Title", "Pay Code", "Pay Code Title", "Amount Column", "Code Type", "Account Type"]
+    col_widths = [42, 12, 32, 14, 30, 16, 12, 12]
     for c, (h, w) in enumerate(zip(headers, col_widths)):
         ws.write(1, c, h, fmt_hdr)
         ws.set_column(c, c, w)
     ws.freeze_panes(2, 0)
 
-    # Amount Column and Code Type dropdown validation
-    AMOUNT_OPTIONS = "EarnAmt,BeneAmt,DeducAmt,EETax,ERTax,EeTax & ERTax,NetAmt,GLOnly"
-    TYPE_OPTIONS   = "EARNING,BENEFIT,DEDUCT,TAXES,"
+    # Dropdown validations
+    AMOUNT_OPTIONS  = "EarnAmt,BeneAmt,DeducAmt,EETax,ERTax,EeTax & ERTax,NetAmt,GLOnly"
+    TYPE_OPTIONS    = "EARNING,BENEFIT,DEDUCT,TAXES,"
+    ACCT_OPTIONS    = "expense,liability,bank,glonly,"
     ws.data_validation(2, 5, 2000, 5, {"validate": "list", "source": AMOUNT_OPTIONS.split(",")})
     ws.data_validation(2, 6, 2000, 6, {"validate": "list", "source": TYPE_OPTIONS.split(",")})
+    ws.data_validation(2, 7, 2000, 7, {"validate": "list", "source": ACCT_OPTIONS.split(",")})
 
     # Data rows
     last_step  = None
@@ -519,6 +554,7 @@ async def export_mapping_config_excel(client_name: str = "default"):
         ws.write(2 + data_count, 4, str(row.get("pay_code_title", "")).strip(),     base)
         ws.write(2 + data_count, 5, str(row.get("amount_column",  "")).strip(),     fmt_drop)
         ws.write(2 + data_count, 6, str(row.get("code_type",      "")).strip(),     fmt_drop)
+        ws.write(2 + data_count, 7, str(row.get("account_type",   "")).strip(),     fmt_drop)
         data_count += 1
 
     wb.close()
@@ -592,6 +628,8 @@ async def import_mapping_config_excel(
             col_map["amount_column"] = col
         elif "code type" in cl or "code_type" in cl:
             col_map["code_type"] = col
+        elif "account type" in cl or "account_type" in cl:
+            col_map["account_type"] = col
 
     required = ["recon_step", "gl_code", "pay_code", "amount_column", "code_type"]
     missing  = [r for r in required if r not in col_map]
@@ -616,6 +654,7 @@ async def import_mapping_config_excel(
             "pay_code_title": str(row.get(col_map.get("pay_code_title", ""), "") or "").strip(),
             "amount_column":  str(row.get(col_map.get("amount_column", ""), "") or "EarnAmt").strip(),
             "code_type":      str(row.get(col_map.get("code_type", ""), "") or "").strip().upper(),
+            "account_type":   str(row.get(col_map.get("account_type", ""), "") or "").strip().lower(),
         })
         # Clean "nan" strings
         rows[-1] = {k: (v if v != "nan" else "") for k, v in rows[-1].items()}
