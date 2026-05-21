@@ -868,7 +868,7 @@ def _print_terminal_report(
             "  " + _line("─")[2:],
             (
                 f"  {'GRAND TOTAL':<{_CW['step']}} {'':>{_CW['code']}}  "
-                f"{'':< {_CW['title']}} {_fmt(tr['GL Net Amount']):>{_CW['gl']}}  "
+                f"{'':<{_CW['title']}} {_fmt(tr['GL Net Amount']):>{_CW['gl']}}  "
                 f"{_fmt(tr['PR Amount']):>{_CW['pr']}}  {_fmt(tr['Variance']):>{_CW['var']}}"
             ),
         ]
